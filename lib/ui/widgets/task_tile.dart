@@ -77,7 +77,7 @@ class MyTile extends StatelessWidget {
                       ),
                       Text(
                         myTask!.note!,
-                        style: heading.copyWith(fontSize: 14),
+                        style: heading.copyWith(fontSize: 16,fontWeight: FontWeight.bold),
                       )
                     ],
                   ),

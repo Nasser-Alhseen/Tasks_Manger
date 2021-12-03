@@ -49,9 +49,11 @@ class _HomeState extends State<Home> {
         actions: [
           Container(
               margin: const EdgeInsets.only(right: 10),
-              child: Icon(
-                Icons.person,
-                size: 30,
+              child: CircleAvatar(
+                radius: 50,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(45),
+                    child: Image.asset('images/g.jpg')),
               ))
         ],
         leading: IconButton(
@@ -150,7 +152,7 @@ class _HomeState extends State<Home> {
               ? Container()
               : buildBottomSheet(
                   label: 'Task Completed',
-                  on_tap: ()  {
+                  on_tap: () {
                     controller.completeTask(myTask.id!);
                     Get.back();
                   },
