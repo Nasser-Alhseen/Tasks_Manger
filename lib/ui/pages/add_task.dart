@@ -38,7 +38,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   int selectedRemind = 5;
   List<int> Reminds = const [5, 10, 15, 20];
   String selectedRepeat = 'none';
-  List<String> Repeat = ['none', 'weakly', 'monthly', 'yearly'];
+  List<String> Repeat = ['none','daily', 'weakly', 'monthly'];
   int selectedColor = 0;
   validateInput() {
     if (titleController.text.isNotEmpty && noteController.text.isNotEmpty) {

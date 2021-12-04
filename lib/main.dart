@@ -8,14 +8,15 @@ import 'package:flutter_app3/ui/pages/add_task.dart';
 import 'package:flutter_app3/ui/pages/home.dart';
 import 'package:flutter_app3/ui/theme.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 void main() async {
   TaskController t = Get.put(TaskController());
   WidgetsFlutterBinding.ensureInitialized();
   await DBhelper.initDB();
+  await GetStorage.init();
   await t.getTasks();
-    runApp(const MyApp());
-
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

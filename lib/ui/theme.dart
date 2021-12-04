@@ -21,9 +21,18 @@ class Themes {
 }
 
 TextStyle get titleStyle {
-  return GoogleFonts.lato(
+  return GoogleFonts.pacifico(
       textStyle: TextStyle(
           fontSize: 17, color: Get.isDarkMode ? Colors.white : Colors.black));
+}
+
+TextStyle get centerTitle {
+  return GoogleFonts.actor(
+      textStyle: TextStyle(
+          letterSpacing: 2,
+          fontWeight: FontWeight.bold,
+          fontSize: 19,
+          color: Get.isDarkMode ? Colors.white : Colors.black));
 }
 
 TextStyle get titleStyle1 {

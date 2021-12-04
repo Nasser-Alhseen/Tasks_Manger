@@ -9,19 +9,17 @@ class TaskController extends GetxController {
   }
 
   Future<void> getTasks() async {
-    print('getting');
     final tasks = await DBhelper.getData();
-    print(tasks.toString());
-    tasksList.assignAll(tasks.map((e) => e));
+    tasksList.assignAll(tasks.map((e) => Task.fromMap(e)));
   }
 
-  Future<void> completeTask(int id) async {
-    await DBhelper.update(id);
-    getTasks();
+  Future<void> completeTask(Task myTask) async {
+     await DBhelper.update(myTask);
+    await getTasks();
   }
 
   Future<void> deleteTask(Task myTask) async {
     await DBhelper.delete(myTask);
-    getTasks();
+    await getTasks();
   }
 }

@@ -4,13 +4,12 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DBhelper {
-  static const int version = 2;
+  static const int version = 1;
   static const String dbName = 'TasksDB.db';
   static const String tableName = "notesDb";
   static Database? db;
   static Future<void> initDB() async {
-    if (db != null)
-      ;
+    if (db != null) {}
     else {
       try {
         String path = await getDatabasesPath() + dbName;
@@ -25,30 +24,28 @@ class DBhelper {
       }
     }
   }
+  
 
   static Future<int> insert(Task? myTask) async {
-    print('insert function called');
-    return await db!.insert(tableName,myTask!.toJson());
+    return await db!.insert(tableName, myTask!.toMap());
   }
 
-  static Future<int> delete(Task myTask) async {
-    print('delete function called');
+  static Future<void> delete(Task myTask) async {
 
-    return await db!.delete(tableName, where: 'id=?', whereArgs: [myTask.id]);
+     await db!.delete(tableName, where: 'id=?', whereArgs: [myTask.id]);
   }
 
-  static Future<int> update(int id) async {
-    print('update function called');
+  static Future<void> update(Task myTask) async {
 
-    return await db!.rawUpdate('''
+     await db!.rawUpdate('''
     UPDATE notesDb
     SET isCompleted= ?
     WHERE id = ?
     
-    ''', [1, id]);
+    ''', [1, myTask.id]);
   }
 
-  static  getData() async {
+  static getData() async {
     return await db!.query(tableName);
   }
 }

@@ -11,11 +11,14 @@ import 'package:flutter_app3/ui/theme.dart';
 import 'package:flutter_app3/ui/widgets/input_field.dart';
 import 'package:flutter_app3/ui/widgets/my_button.dart';
 import 'package:flutter_app3/ui/widgets/task_tile.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/context_extensions.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -48,14 +51,19 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         actions: [
           Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: CircleAvatar(
-                radius: 50,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(45),
-                    child: Image.asset('images/g.jpg')),
-              ))
+            margin: const EdgeInsets.only(right: 10),
+            child: Icon(Icons.person,
+                size: 40, color: Get.isDarkMode ? Colors.white : Colors.black),
+          ),
         ],
+        title: Text(
+          'Tasks Done',
+          style: GoogleFonts.pacifico(
+              textStyle: TextStyle(
+                  letterSpacing: 2,
+                  fontSize: 22,
+                  color: Get.isDarkMode ? Colors.white : Colors.black)),
+        ),
         leading: IconButton(
           icon: Icon(
             Get.isDarkMode ? Icons.dark_mode : Icons.wb_sunny,
@@ -152,19 +160,19 @@ class _HomeState extends State<Home> {
               ? Container()
               : buildBottomSheet(
                   label: 'Task Completed',
-                  on_tap: () {
-                    controller.completeTask(myTask.id!);
+                  on_tap: () async {
+                    await controller.completeTask(myTask);
                     Get.back();
                   },
                   color: context.theme.primaryColor,
                 )),
           buildBottomSheet(
             label: 'Delete Task ',
-            on_tap: () {
-              controller.deleteTask(myTask);
+            on_tap: () async {
+              await controller.deleteTask(myTask);
               Get.back();
             },
-            color: context.theme.primaryColor,
+            color: Colors.redAccent.withOpacity(0.8),
           ),
           Divider(
             color: context.theme.primaryColor,
@@ -230,7 +238,9 @@ class _HomeState extends State<Home> {
         selectionColor: context.theme.primaryColor,
         selectedTextColor: whiteC,
         onDateChange: (newDate) {
-          selectedDate = newDate;
+          setState(() {
+            selectedDate = newDate;
+          });
         },
       ),
     );
@@ -255,37 +265,41 @@ class _HomeState extends State<Home> {
                   shrinkWrap: true,
                   itemCount: tasks.length,
                   itemBuilder: (c, int i) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: GestureDetector(
-                          onTap: () {
-                            showBottomSheet(
-                                context,
-                                Task(
-                                    title: tasks[i]['title'],
-                                    note: tasks[i]['note'],
-                                    isCompleted: tasks[i]['isCompleted'],
-                                    color: tasks[i]['color'],
-                                    date: tasks[i]['date'],
-                                    endTime: tasks[i]['endTime'],
-                                    startTime: tasks[i]['startTime'],
-                                    reminder: tasks[i]['reminder'],
-                                    repeat: tasks[i]['repeat']));
-                          },
-                          child: MyTile(
-                            myTask: Task(
-                                title: tasks[i]['title'],
-                                note: tasks[i]['note'],
-                                isCompleted: tasks[i]['isCompleted'],
-                                color: tasks[i]['color'],
-                                date: tasks[i]['date'],
-                                endTime: tasks[i]['endTime'],
-                                startTime: tasks[i]['startTime'],
-                                reminder: tasks[i]['reminder'],
-                                repeat: tasks[i]['repeat']),
-                          )),
-                      // child: MyTile(myTask: tasks[i])),
-                    );
+                    if (tasks[i].repeat == 'daily' ||
+                        tasks[i].date ==
+                            DateFormat.yMd().format(selectedDate) ||
+                        (tasks[i].repeat == 'weakly' &&
+                            selectedDate
+                                        .difference(DateFormat.yMd()
+                                            .parse(tasks[i].date!))
+                                        .inDays %
+                                    7 ==
+                                0) ||
+                        (tasks[i].repeat == 'monthly' &&
+                            DateFormat.yMd().parse(tasks[i].date!).day ==
+                                selectedDate.day)) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: AnimationConfiguration.staggeredList(
+                          position: i,
+                          duration: const Duration(milliseconds: 800),
+                          child: SlideAnimation(
+                            horizontalOffset: 300,
+                            child: FadeInAnimation(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    showBottomSheet(context, tasks[i]);
+                                  },
+                                  child: MyTile(myTask: tasks[i])),
+                            ),
+                          ),
+                        ),
+                        // child: MyTile(myTask: tasks[i])),
+                      );
+                    } else {
+                      return Container();
+                    }
+                    ;
                   }),
             );
           }
@@ -302,8 +316,8 @@ class _HomeState extends State<Home> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: 80,
+                const SizedBox(
+                  height: 120,
                 ),
                 SvgPicture.asset('images/task.svg',
                     width: 100, height: 100, color: context.theme.primaryColor),

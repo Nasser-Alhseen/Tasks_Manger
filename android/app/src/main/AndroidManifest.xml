@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_app3">
    <application
-        android:label="flutter_app3"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Task Done"
+        android:icon="@mipmap/launcher_icon">
+        
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
